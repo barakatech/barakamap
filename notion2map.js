@@ -15,7 +15,7 @@ const notion = new Client({
     auth: process.env.NOTION_TOKEN,
 })
 
-const GEO_FILE = 'public/data.js'
+const GEO_FILE = 'docs/data.js'
 
 ;
 (async () => {

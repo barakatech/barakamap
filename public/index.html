@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <title>BarakaMap</title>
+    <meta name="description" content="A map with Baraka people">
+    <meta name="author" content="@jagedn">
+    <meta name="robots" content="index, follow">
+    <meta name="referrer" content="always">
+
+    <meta property="og:title" content="A map with Baraka people">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="A map with Baraka people">
+    <meta property="og:url" content="https://github.com/migupl/leaflet-map-vanilla-js-web-component">
+
+    <meta name="twitter:title" content="A map with Baraka people">
+    <meta name="twitter:description" content="A map with Baraka people">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@jagedn">
+    <meta name="twitter:creator" content="@jagedn">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300&family=Source+Code+Pro:wght@500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.1.1/css/all.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/agate.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+
+    <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico">
+    <script type="module" src="https://migupl.github.io/vanilla-js-web-component-leaflet-geojson/components/leaflet-map-component/leaflet-map.js"></script>
+    <script src="data.js"></script>
+
+    <style>
+        header {
+            margin-bottom: 60px;
+        }
+
+        header,
+        footer {
+            text-align: center;
+            background: #333;
+            color: #fff;
+            padding: 20px 0;
+        }
+
+        header a,
+        footer a {
+            color: #3887BE;
+        }
+
+        footer {
+            margin-top: 60px;
+        }
+
+        body {
+            font-family: 'Merriweather', serif;
+            font-size: 1.25em;
+            margin: 0;
+        }
+
+        .container {
+            margin: 0 auto;
+            width: 60%;
+            padding: 0;
+        }
+
+        pre code {
+            border-radius: 10px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        code {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.65em;
+        }
+
+        code.inline {
+            font-size: 1em;
+        }
+
+        h2 {
+            margin-top: 50px;
+            margin-bottom: 0;
+            color: #3887BE;
+        }
+
+        h3 {
+            margin-bottom: 0;
+            color: #3887BE;
+        }
+
+        ol {
+            list-style-type: circle;
+        }
+
+        li {
+            margin-top: 1.25ch;
+        }
+
+        #subtitle {
+            margin: 0;
+            font-size: 0.8em;
+        }
+
+        leaflet-map {
+            height: 300px;
+            display: block;
+            position: relative;
+        }
+
+        .small-map {
+            margin-left: auto;
+            margin-right: auto;
+            width: 70%;
+        }
+
+        #notion-map {
+            margin-left: auto;
+            margin-right: auto;
+            height: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <h1>BarakaMap</h1>
+        </div>
+    </header>
+    <section id="setting-up">
+        <leaflet-map id="notion-map" longitude="-3.6888136946558996" latitude="40.42062134697108" zoom="3"></leaflet-map>
+    </section>
+
+    <footer>
+        Made with
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" />
+        </svg>
+        using <a href="http://leafletjs.com" target="_blank" rel="noopener noreferrer">Leaflet</a>
+        (<a href="https://github.com/migupl/leaflet-map-vanilla-js-web-component" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>)
+    </footer>
+</body>
+
+<script>
+    window.onload = (event) => {
+        const map = document.getElementById('notion-map');
+
+        const eventBus = map.eventBus;
+
+        eventBus.dispatch('x-leaflet-map-geojson-add', {
+            leafletMap: map,
+            geojson: features
+        });
+    }
+</script>
+
+</html>

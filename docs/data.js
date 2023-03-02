@@ -51,7 +51,7 @@ const features = {
         },{
             type: "Feature",
             geometry: {
-                type: "Point", coordinates: [30.8768375, 26.9060999]
+                type: "Point", coordinates: [32.4414546, 29.9770447]
             },
             properties: {
                 popupContent: `Hala, I’m David from Suez, Egypt`,

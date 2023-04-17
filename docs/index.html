@@ -33,7 +33,6 @@
 
     <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico">
     <script type="module" src="https://migupl.github.io/vanilla-js-web-component-leaflet-geojson/components/leaflet-map-component/leaflet-map.js"></script>
-    <script src="data.js"></script>
 
     <style>
         header {}
@@ -147,7 +146,10 @@
 </body>
 
 <script>
-    window.onload = (event) => {
+    window.onload = async (event) => {
+        const features = await (await fetch("data.json")).json()
+        console.log(features)
+
         const map = document.getElementById('notion-map');
 
         const eventBus = map.eventBus;

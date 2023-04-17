@@ -8,6 +8,10 @@ const {
     env
 } = require('process');
 
+const axios = require('axios');
+
+const https = require('https');
+
 require('dotenv').config();
 
 // Initializing a client
@@ -15,14 +19,18 @@ const notion = new Client({
     auth: process.env.NOTION_TOKEN,
 })
 
-const GEO_FILE = 'docs/data.js'
+const GEO_FILE = 'docs/data.json';
 
-;
+const donwloadFile = async (url, name) => {
+    console.log(name)
+    const output = fs.createWriteStream(name);
+    https.get(url, (res) => {
+        res.pipe(output);
+    })
+}
+
+
 (async () => {
-
-    fs.writeFileSync(GEO_FILE, `const features = {
-        type: "FeatureCollection",
-        features:[`);
 
     const myPage = await notion.databases.query({
         database_id: process.env.DATABASE
@@ -30,25 +38,36 @@ const GEO_FILE = 'docs/data.js'
 
     const googlemapExpr = /@(\-?[\0-9\.]+),(\-?[?0-9\.]+),([0-9z]+)/
 
-    myPage.results.forEach(i => {
+    const features = {
+        type: "FeatureCollection",
+        features: []
+    };
+
+    await Promise.all(myPage.results.map(async (i) => {
         const title = i.properties['Name'];
         if (title.title.length == 0)
             return;
 
         const name = title.title[0].plain_text;
         const url = i.properties['GoogleMap'].url;
-        const presentation = i.properties['Presentation'].rich_text.map(m => m.plain_text).join(' ');
+        let presentation = i.properties['Presentation'].rich_text.map(m => m.plain_text).join(' ');
         const coordinates = googlemapExpr.exec(url);
         const lat = coordinates[1];
         const lng = coordinates[2];
+        const picture = (i.properties.Picture.files[0] || {}).file;
+        if (picture) {
+            await donwloadFile(picture.url, `docs/${name}.jpg`)
+            presentation += `<br/><image style="width:auto; max-width:150px;max-height:150px;" src="${name}.jpg"/>`
+        }
 
-        fs.appendFileSync(GEO_FILE, `{
+        features.features.push({
             type: "Feature",
             geometry: {
-                type: "Point", coordinates: [${lng}, ${lat}]
+                type: "Point",
+                coordinates: [`${lng}`, `${lat}`]
             },
             properties: {
-                popupContent: \`${presentation}\`,
+                popupContent: `${presentation}`,
                 icon: {
                     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
                     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -57,10 +76,11 @@ const GEO_FILE = 'docs/data.js'
                     popupAnchor: [1, -34],
                     shadowSize: [41, 41]
                 }
-            }            
-        },`)
+            }
+        })
 
-    })
-
-    fs.appendFileSync(GEO_FILE, `]};`)
+        return true;
+    }))
+    const json = JSON.stringify(features, null, 12);
+    fs.writeFileSync(GEO_FILE, json)
 })()

@@ -52,6 +52,8 @@ const donwloadFile = async (url, name) => {
         const url = i.properties['GoogleMap'].url;
         let presentation = i.properties['Presentation'].rich_text.map(m => m.plain_text).join(' ');
         const coordinates = googlemapExpr.exec(url);
+        if (!coordinates)
+            return;
         const lat = coordinates[1];
         const lng = coordinates[2];
         const picture = (i.properties.Picture.files[0] || {}).file;
